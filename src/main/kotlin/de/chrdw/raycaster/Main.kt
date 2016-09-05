@@ -8,7 +8,7 @@ import de.chrdw.raycaster.game.WIDTH
 
 fun main(args: Array<String>) {
     val config = LwjglApplicationConfiguration()
-    config.title = "KotlinWolf"
+    config.title = "Wolf"
     config.width = WIDTH
     config.height = HEIGHT
     config.vSyncEnabled = false

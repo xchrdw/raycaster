@@ -47,16 +47,25 @@ class RayCaster {
             tile = level.get(mapX, mapY)
         }
 
-        val intersection = pos + dir.normalized() * (if (side == 0) sideDistX - deltaDistX else sideDistY - deltaDistY)
-        val wallPart =  (if(side==0) intersection.y else intersection.x) % 1
-
         //Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
         val perpWallDist =
                 if (side == 0)
                     (mapX - pos.x + (1 - stepX) / 2) / dir.x;
                 else
                     (mapY - pos.y + (1 - stepY) / 2) / dir.y;
-        return RayHit(perpWallDist, side, wallPart, tile)
+
+        var wallX =
+                if (side == 0)
+                    pos.y + perpWallDist * dir.y
+                else
+                    pos.x + perpWallDist * dir.x
+        wallX -= Math.floor(wallX)
+
+        if (side == 0 && stepX == -1) wallX = 1 - wallX
+        if (side == 1 && stepY == 1) wallX = 1 - wallX
+
+
+        return RayHit(perpWallDist, side, wallX, tile)
     }
 
 }

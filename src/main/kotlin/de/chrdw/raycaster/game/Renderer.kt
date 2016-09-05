@@ -1,8 +1,6 @@
 package de.chrdw.raycaster.game
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import java.nio.ByteBuffer
 
 
@@ -11,14 +9,19 @@ class Renderer {
 
     private val map: Pixmap
     private val buffer: ByteBuffer
+    private val texures = arrayOf(
+            Texture("img/redbrick.png"),
+            Texture("img/eagle.png"),
+            Texture("img/mossy.png"),
+            Texture("img/greystone.png"))
 
     init {
         map = Pixmap(WIDTH, HEIGHT, Pixmap.Format.RGBA8888)
         buffer = map.pixels
     }
 
-    fun texture(): Texture {
-        return Texture(map)
+    fun texture(): com.badlogic.gdx.graphics.Texture {
+        return com.badlogic.gdx.graphics.Texture(map)
     }
 
     fun draw(state: State) {
@@ -34,13 +37,17 @@ class Renderer {
         for (x in 0..WIDTH - 1) {
             val cameraX = 2.0 * x / WIDTH - 1
             val ray = dir + plane * cameraX
-            val (dist, side, part, tile) = raycaster.ray(pos, ray, state.level)
-            val height = Math.min((HEIGHT / dist).toInt(), HEIGHT )
-            val color = mulColor(mulColor(tile.color, 3.0 / (side + 3)), part)
-            val wallstart = HEIGHT / 2 - height/2
+            val (dist, side, wallX, tile) = raycaster.ray(pos, ray, state.level)
+            val height = (HEIGHT / dist).toInt()
+            val texture = texures[tile.texture]
+            val wallstart = HEIGHT / 2 - height / 2
             for (h in 0..height - 1) {
                 val y = wallstart + h
-                buffer.putInt((x + y * WIDTH) * 4, color)
+                if(y >= 0 && y < HEIGHT) {
+                    var color = texture.getPixel(wallX, h.toDouble() / height)
+                    color = mulColor(color, 2.0 / (2 + side))
+                    buffer.putInt((x + y * WIDTH) * 4, color)
+                }
             }
         }
         buffer.flip()
@@ -51,7 +58,7 @@ class Renderer {
         val g = ((color ushr 16 and 0xff) * mul).toInt()
         val b = ((color ushr 8 and 0xff) * mul).toInt()
         val a = color and 0xff
-        return  (r shl 24) or (g shl 16) or (b shl 8) or a
+        return (r shl 24) or (g shl 16) or (b shl 8) or a
     }
 
     private fun clear() {

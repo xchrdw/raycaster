@@ -3,7 +3,6 @@ package de.chrdw.raycaster.game
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 const val WIDTH = 800
@@ -17,7 +16,6 @@ const val LEVELSIZE = 20
 
 class Game : ApplicationAdapter() {
 
-    //private lateinit var img: Texture
     private lateinit var renderer: Renderer
     private lateinit var batch: SpriteBatch
 
@@ -27,9 +25,6 @@ class Game : ApplicationAdapter() {
     override fun create() {
         batch = SpriteBatch()
         renderer = Renderer()
-
-        //val img = Texture(Gdx.files.internal("test.jpg"));
-
     }
 
     override fun render() {
