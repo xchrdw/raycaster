@@ -1,0 +1,30 @@
+buildscript {
+  ext.kotlin_version = '1.0.3'
+  ext.gdx_version = '1.9.4'
+  ext.junit_version = '4.12'
+  
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+  
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = "de.chrdw.raycaster.MainKt"
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "com.badlogicgames.gdx:gdx:$gdx_version"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdx_version:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdx_version"
+    testCompile "junit:junit:$junit_version"
+}
