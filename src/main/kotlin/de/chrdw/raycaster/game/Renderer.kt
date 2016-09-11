@@ -38,16 +38,16 @@ class Renderer {
             val cameraX = 2.0 * x / WIDTH - 1
             val ray = dir + plane * cameraX
             val (dist, side, wallX, tile) = raycaster.ray(pos, ray, state.level)
-            val height = (HEIGHT / dist).toInt()
+            val height = if (dist > 0) (HEIGHT / dist).toInt() else HEIGHT
             val texture = texures[tile.texture]
             val wallstart = HEIGHT / 2 - height / 2
-            for (h in 0..height - 1) {
-                val y = wallstart + h
-                if(y >= 0 && y < HEIGHT) {
-                    var color = texture.getPixel(wallX, h.toDouble() / height)
-                    color = mulColor(color, 2.0 / (2 + side))
-                    buffer.putInt((x + y * WIDTH) * 4, color)
-                }
+            val y0 = Math.max(0, wallstart)
+            val y1 = Math.min(HEIGHT-1, wallstart + height)
+            for (y in y0..y1) {
+                val h = (y-wallstart).toDouble() / height
+                var color = texture.getPixel(wallX, h )
+                color = mulColor(color, 2.0 / (2 + side))
+                buffer.putInt((x + y * WIDTH) * 4, color)
             }
         }
         buffer.flip()

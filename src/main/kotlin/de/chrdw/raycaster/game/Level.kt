@@ -38,7 +38,7 @@ class Level {
 
     val data: Array<Tile>
 
-    var start: Vec2 = Vec2(LEVELSIZE/2, LEVELSIZE/2)
+    var start: Vec2 = Vec2(LEVELSIZE/2 + 0.5, LEVELSIZE/2 + 0.5)
 
     init {
         assert(level.length == LEVELSIZE* LEVELSIZE)
@@ -50,7 +50,7 @@ class Level {
                 'g' -> Tile(TileType.WALL, 2)
                 'b' -> Tile(TileType.WALL, 3)
                 'p' -> {
-                    start = Vec2(i % LEVELSIZE, i / LEVELSIZE)
+                    start = Vec2(i % LEVELSIZE + 0.5, i / LEVELSIZE + 0.5)
                     Tile(TileType.FLOOR, -1)
                 }
                 else -> Tile(TileType.WALL, 0)
@@ -60,7 +60,7 @@ class Level {
 
     fun get(x: Int, y: Int): Tile {
         if (x < 0 || x >= LEVELSIZE || y < 0 || y >= LEVELSIZE) {
-            return Tile(TileType.WALL, Color.rgba8888(1f, 1f, 1f, 1f))
+            return Tile(TileType.WALL, 0)
         }
         return data[x + LEVELSIZE * y]
     }

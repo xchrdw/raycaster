@@ -1,7 +1,7 @@
 package de.chrdw.raycaster.game
 
 class Player {
-    var position = Vec2((LEVELSIZE - 1) / 2.0, (LEVELSIZE - 1) / 2.0)
+    var position = Vec2((LEVELSIZE - 1) / 2.0 + 0.5, (LEVELSIZE - 1) / 2.0 + 0.5)
     var angle = 0.0
 
     val SPEED = 3.0

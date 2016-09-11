@@ -3,7 +3,11 @@ package de.chrdw.raycaster.game
 
 class RayCaster {
 
-    data class RayHit(val depth: Double, val side: Int, val wallPart: Double, val tile: Tile)
+    data class RayHit(var depth: Double, var side: Int, var wallPart: Double, var tile: Tile)
+
+    private val DEFAULT_TILE: Tile = Tile(TileType.FLOOR, 0)
+
+    private val rayhit = RayHit(0.0,0,0.0, DEFAULT_TILE)
 
     fun ray(pos: Vec2, dir: Vec2, level: Level): RayHit {
         var mapX = pos.x.toInt()
@@ -30,7 +34,7 @@ class RayCaster {
         }
 
         var side: Int = 0
-        var tile: Tile = Tile(TileType.FLOOR, 0)
+        var tile: Tile = DEFAULT_TILE
         //perform DDA
         while (tile.type == TileType.FLOOR) {
             //jump to next map square, OR in x-direction, OR in y-direction
@@ -46,7 +50,6 @@ class RayCaster {
             //Check if ray has hit a wall
             tile = level.get(mapX, mapY)
         }
-
         //Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
         val perpWallDist =
                 if (side == 0)
@@ -64,8 +67,11 @@ class RayCaster {
         if (side == 0 && stepX == -1) wallX = 1 - wallX
         if (side == 1 && stepY == 1) wallX = 1 - wallX
 
-
-        return RayHit(perpWallDist, side, wallX, tile)
+        rayhit.depth = perpWallDist
+        rayhit.side = side
+        rayhit.wallPart = wallX
+        rayhit.tile = tile
+        return rayhit
     }
 
 }

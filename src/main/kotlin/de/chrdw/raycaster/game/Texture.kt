@@ -25,7 +25,7 @@ class Texture(file: String) {
     }
 
     fun getPixel(x: Double, y: Double): Int {
-        return data[(x * width).toInt() + (y * height).toInt() * width]
+        return data[(x * (width-1)).toInt() + (y * (height-1)).toInt() * width]
     }
 
     fun getPixel(x: Int, y: Int): Int {
