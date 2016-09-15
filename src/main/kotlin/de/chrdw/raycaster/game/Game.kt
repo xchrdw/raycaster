@@ -29,6 +29,9 @@ class Game : ApplicationAdapter() {
 
     override fun render() {
         val delta = Gdx.graphics.deltaTime
+
+        if(delta > 1.0/50)
+            println(delta)
         input.update()
         state.update(delta.toDouble(), input)
 

@@ -9,6 +9,6 @@ class State {
     }
 
     fun update(delta: Double, input: Input) {
-        player.update(delta, input)
+        player.update(delta, input, this)
     }
 }

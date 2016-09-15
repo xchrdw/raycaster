@@ -1,6 +1,6 @@
 package de.chrdw.raycaster.game
 
-import com.badlogic.gdx.graphics.Color
+import java.util.*
 
 
 enum class TileType() {
@@ -15,10 +15,10 @@ x        xx        x
 x        xx        x
 x        xx  g g g x
 x      b xx        x
-x   p        g g g x
+x   p    a   g g g x
 x      r xx        x
 x        xx  g g g x
-x        xx        x
+x a o o  xx        x
 xxxex xexxxxxx xxxxx
 xxxxx xxxxxxxx xxxxx
 x        xx        x
@@ -34,26 +34,41 @@ xxxxxxxxxxxxxxxxxxxx
 
 data class Tile(val type: TileType, val texture: Int)
 
+data class Sprite(val position: Vec2, val texture: Int)
+
+
 class Level {
 
-    val data: Array<Tile>
+    val tiles: Array<Tile>
 
-    var start: Vec2 = Vec2(LEVELSIZE/2 + 0.5, LEVELSIZE/2 + 0.5)
+    val sprites: MutableList<Sprite>
+
+    var start: Vec2 = Vec2(LEVELSIZE / 2 + 0.5, LEVELSIZE / 2 + 0.5)
 
     init {
-        assert(level.length == LEVELSIZE* LEVELSIZE)
-        data = Array(LEVELSIZE * LEVELSIZE, { i ->
+        assert(level.length == LEVELSIZE * LEVELSIZE)
+        sprites = ArrayList()
+        tiles = Array(LEVELSIZE * LEVELSIZE, { i ->
+            val position = Vec2(i % LEVELSIZE + 0.5, i / LEVELSIZE + 0.5)
             when (level[i]) {
-                ' ' -> Tile(TileType.FLOOR, -1)
-                'r' -> Tile(TileType.WALL, 0)
-                'e' -> Tile(TileType.WALL, 1)
-                'g' -> Tile(TileType.WALL, 2)
-                'b' -> Tile(TileType.WALL, 3)
-                'p' -> {
-                    start = Vec2(i % LEVELSIZE + 0.5, i / LEVELSIZE + 0.5)
-                    Tile(TileType.FLOOR, -1)
+                ' ' -> Tile(TileType.FLOOR, Textures.Invalid.id)
+                'r' -> Tile(TileType.WALL, Textures.RedBrick.id)
+                'e' -> Tile(TileType.WALL, Textures.Eagle.id)
+                'g' -> Tile(TileType.WALL, Textures.Mossy.id)
+                'b' -> Tile(TileType.WALL, Textures.GreyStone.id)
+                'a' -> {
+                    sprites.add(Sprite(position, Textures.Barrel.id))
+                    Tile(TileType.FLOOR, Textures.Invalid.id)
                 }
-                else -> Tile(TileType.WALL, 0)
+                'o' -> {
+                    sprites.add(Sprite(position, Textures.Pillar.id))
+                    Tile(TileType.FLOOR, Textures.Invalid.id)
+                }
+                'p' -> {
+                    start = position
+                    Tile(TileType.FLOOR, Textures.Invalid.id)
+                }
+                else -> Tile(TileType.WALL, Textures.GreyStone.id)
             }
         })
     }
@@ -62,7 +77,12 @@ class Level {
         if (x < 0 || x >= LEVELSIZE || y < 0 || y >= LEVELSIZE) {
             return Tile(TileType.WALL, 0)
         }
-        return data[x + LEVELSIZE * y]
+        return tiles[x + LEVELSIZE * y]
+    }
+
+    fun  canWalk(pos: Vec2): Boolean {
+        val tile = get(pos.x.toInt(), pos.y.toInt())
+        return tile.type != TileType.WALL
     }
 
 }

@@ -5,9 +5,9 @@ class Player {
     var angle = 0.0
 
     val SPEED = 3.0
-    val ANGLE_SPEED = Math.toRadians(180.0)
+    val ANGLE_SPEED = Math.toRadians(120.0)
 
-    fun update(delta: Double, input: Input) {
+    fun update(delta: Double, input: Input, state: State) {
         var dX = 0.0
         var dY = 0.0
 
@@ -21,11 +21,17 @@ class Player {
             dY = 1.0
 
         if (dX != 0.0 || dY != 0.0) {
-            val move = Vec2(dX, dY).normalized().rotate(angle) * (delta * SPEED)
-            val newPos = position + move
-            if (newPos.x > 0 && newPos.x < LEVELSIZE && newPos.y > 0 && newPos.y < LEVELSIZE) {
-                position = newPos
+            val dir = Vec2(dX, dY).normalized().rotate(angle)
+            val move = dir * (delta * SPEED)
+
+            if (state.level.canWalk(position + move)) {
+                position += move
+            } else if (state.level.canWalk(position + Vec2(move.x, 0.0))) {
+                position += Vec2(move.x, 0.0)
+            } else if (state.level.canWalk(position + Vec2(0.0, move.y))) {
+                position += Vec2(0.0, move.y)
             }
+
         }
 
         if (input.left)
@@ -34,5 +40,4 @@ class Player {
             angle += delta * ANGLE_SPEED
 
     }
-
 }
